@@ -6,7 +6,6 @@ from datetime import timedelta
 
 import aiohttp
 import certifi
-import uvicorn
 from aioredis import Redis
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
