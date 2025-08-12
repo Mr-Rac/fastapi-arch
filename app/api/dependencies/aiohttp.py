@@ -2,11 +2,16 @@ import logging
 from typing import Optional
 
 from aiohttp import ClientSession, web
-from fastapi import Request
+from fastapi import Request, HTTPException, status
+
+from app.exception import ERR
 
 
 async def get_aiohttp(request: Request) -> ClientSession:
-    return request.app.state.aiohttp_session
+    session: ClientSession | None = getattr(request.app.state, "aiohttp_session", None)
+    if not session:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ERR.DEPENDENCY_AIOHTTP_INVALID)
+    return session
 
 
 async def post(
