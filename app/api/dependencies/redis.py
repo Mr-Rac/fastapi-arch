@@ -1,6 +1,6 @@
 from typing import Optional
 
-from aioredis import Redis
+import redis.asyncio as Redis
 from fastapi import Request, HTTPException, status
 
 from app.exception import ERR

@@ -6,7 +6,7 @@ from datetime import timedelta
 
 import aiohttp
 import certifi
-from aioredis import Redis
+import redis.asyncio as Redis
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
@@ -96,12 +96,10 @@ async def lifespan(app: FastAPI):
             timeout=aiohttp.ClientTimeout(total=settings.AIOHTTP_TIMEOUT),
             connector=aiohttp.TCPConnector(ssl=ssl_context),
         )
-        app.state.redis = Redis(
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT,
+        app.state.redis = Redis.from_url(
+            url=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
             password=settings.REDIS_PASSWORD,
             db=settings.REDIS_DB,
-            encoding=settings.REDIS_ENCODING,
             decode_responses=settings.REDIS_DECODE_RESPONSES,
             max_connections=settings.REDIS_MAX_CONNECTIONS,
             retry_on_timeout=settings.REDIS_RETRY_ON_TIMEOUT,

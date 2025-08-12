@@ -34,7 +34,6 @@ class Settings(BaseSettings):
     REDIS_USER: Optional[str] = None
     REDIS_PASSWORD: Optional[str] = None
     REDIS_DB: int = 0
-    REDIS_ENCODING: str = "utf-8"
     REDIS_DECODE_RESPONSES: bool = True
     REDIS_MAX_CONNECTIONS: int = 10
     REDIS_RETRY_ON_TIMEOUT: bool = True

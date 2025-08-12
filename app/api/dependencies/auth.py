@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from enum import Enum
 from typing import Optional
 
-from aioredis import Redis
+from redis.asyncio import Redis
 from fastapi import HTTPException, status
 from jwcrypto import jwt, jwk
 

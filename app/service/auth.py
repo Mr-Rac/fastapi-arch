@@ -1,4 +1,4 @@
-from aioredis import Redis
+import redis.asyncio as Redis
 
 from app.api.dependencies.auth import TokenService, TokenType
 from app.schema.auth import *

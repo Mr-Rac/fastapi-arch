@@ -1,4 +1,4 @@
-from aioredis import Redis
+import redis.asyncio as Redis
 from fastapi import APIRouter, Depends
 
 from app.api.dependencies.redis import get_redis
