@@ -119,7 +119,7 @@ async def lifespan(app: FastAPI):
 
 def create_app(enable_lifespan: bool = True) -> FastAPI:
     app = FastAPI(
-        title=f"official_server_{settings.SERVER_NAME}",
+        title=settings.SERVER_NAME,
         lifespan=lifespan if enable_lifespan else None,
     )
     app.add_exception_handler(HTTPException, http_exception_handler)

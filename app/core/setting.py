@@ -9,7 +9,7 @@ load_dotenv()
 class Settings(BaseSettings):
     # Base
     SERVER_ENV: Literal["PROD", "TEST", "LOCAL"] = "LOCAL"
-    SERVER_NAME: str = "fastapi-app"
+    SERVER_NAME: str = "fastapi-arch-app"
 
     # Log
     LOG_LEVEL: str = "INFO"
