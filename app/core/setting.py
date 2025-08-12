@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
@@ -17,22 +17,23 @@ class Settings(BaseSettings):
     LOG_RETENTION: int = 7  # 单位: 天
 
     # MySQL
-    MYSQL_HOST: str
+    MYSQL_HOST: str = "localhost"
     MYSQL_PORT: int = 3306
-    MYSQL_USER: str
-    MYSQL_PASSWORD: str
-    MYSQL_POOL_SIZE: int = 10
-    MYSQL_MAX_OVERFLOW: int = 20
-    MYSQL_POOL_PRE_PING: bool = True
+    MYSQL_USER: str | None = None
+    MYSQL_PASSWORD: str | None = None
+    MYSQL_DB: str = "db"
+    MYSQL_MINSIZE: int = 1
+    MYSQL_MAXSIZE: int = 10
+    MYSQL_AUTO_COMMIT: bool = False
     MYSQL_POOL_RECYCLE: int = 3600
-    MYSQL_POOL_TIMEOUT: int = 30
-    MYSQL_PAGE_LIMIT: int = 100
+    MYSQL_CONNECT_TIMEOUT: int = 10
+    MYSQL_ECHO: bool = True
 
     # Redis
-    REDIS_HOST: str
+    REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
-    REDIS_USER: Optional[str] = None
-    REDIS_PASSWORD: Optional[str] = None
+    REDIS_USER: str | None = None
+    REDIS_PASSWORD: str | None = None
     REDIS_DB: int = 0
     REDIS_DECODE_RESPONSES: bool = True
     REDIS_MAX_CONNECTIONS: int = 10
@@ -41,8 +42,8 @@ class Settings(BaseSettings):
     # JWT
     JWT_TYPE: str = "Bearer"
     JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_SECRET_KEY: str
-    JWT_REFRESH_SECRET_KEY: str
+    JWT_ACCESS_SECRET_KEY: str = ""
+    JWT_REFRESH_SECRET_KEY: str = ""
     JWT_ACCESS_TOKEN_EXPIRE: int = 60 * 10  # 单位: 秒
     JWT_REFRESH_TOKEN_EXPIRE: int = 60 * 60 * 24  # 单位: 秒
 

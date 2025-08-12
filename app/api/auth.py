@@ -1,5 +1,5 @@
-import redis.asyncio as Redis
 from fastapi import APIRouter, Depends
+from redis.asyncio import Redis
 
 from app.api.dependencies.redis import get_redis
 from app.decorator.auth import skip_auth

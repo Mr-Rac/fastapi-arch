@@ -6,13 +6,14 @@ from datetime import timedelta
 
 import aiohttp
 import certifi
-import redis.asyncio as Redis
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 from app.api import routers
 from app.core.setting import settings
+from app.database.mysql import create_mysql_pool
+from app.database.redis import create_redis_client
 from app.exception.http_exception import http_exception_handler
 from app.middleware.auth import AuthMiddleware
 
@@ -96,14 +97,10 @@ async def lifespan(app: FastAPI):
             timeout=aiohttp.ClientTimeout(total=settings.AIOHTTP_TIMEOUT),
             connector=aiohttp.TCPConnector(ssl=ssl_context),
         )
-        app.state.redis = Redis.from_url(
-            url=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
-            password=settings.REDIS_PASSWORD,
-            db=settings.REDIS_DB,
-            decode_responses=settings.REDIS_DECODE_RESPONSES,
-            max_connections=settings.REDIS_MAX_CONNECTIONS,
-            retry_on_timeout=settings.REDIS_RETRY_ON_TIMEOUT,
-        )
+        app.state.redis = create_redis_client()
+        logger.warning(f"Redis connected.")
+        app.state.mysql_pool = await create_mysql_pool()
+        logger.warning(f"MySQL connected.")
         logger.info("Application initialized completed.")
     except Exception as e:
         logger.critical(f"Application initialization failed: {e}")
@@ -115,6 +112,8 @@ async def lifespan(app: FastAPI):
         await app.state.aiohttp_session.close()
         await app.state.redis.close()
         await app.state.redis.connection_pool.disconnect()
+        app.state.mysql_pool.close()
+        await app.state.mysql_pool.wait_closed()
         logger.info("Application shutdown completed.")
 
 
