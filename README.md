@@ -2,16 +2,24 @@
 
 A scalable and clean FastAPI-based services.
 
-### Start Server
+### Init venv
 
 ```shell
-  uv run python main.py
+  uv venv
+  source .venv/bin/activate
 ```
 
 ### Install requirements.txt
 
 ```shell
   uv add -r requirements.txt
+  uv sync
+```
+
+### Start Server
+
+```shell
+  uv run python main.py
 ```
 
 ### Export requirements.txt
