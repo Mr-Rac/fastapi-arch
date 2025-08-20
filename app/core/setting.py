@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     MYSQL_PORT: int = 3306
     MYSQL_USER: str | None = None
     MYSQL_PASSWORD: str | None = None
-    MYSQL_DB: str = "db"
+    MYSQL_DB: str | None = None
     MYSQL_MINSIZE: int = 1
     MYSQL_MAXSIZE: int = 10
     MYSQL_AUTO_COMMIT: bool = False
