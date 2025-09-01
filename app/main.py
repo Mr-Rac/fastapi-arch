@@ -58,7 +58,7 @@ def _init_log():
 
     if not settings.is_local:
         logger.add(
-            "log/ji_admin_{time:YYYY-MM-DD}.log",
+            "log/{time:YYYY-MM-DD}.log",
             rotation=timedelta(days=settings.LOG_ROTATION),
             retention=timedelta(weeks=settings.LOG_RETENTION),
             compression="zip",
