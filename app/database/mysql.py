@@ -17,3 +17,8 @@ async def create_mysql_pool() -> Pool:
         connect_timeout=settings.MYSQL_CONNECT_TIMEOUT,
         echo=settings.MYSQL_ECHO,
     )
+
+
+async def close_mysql_pool(pool: Pool) -> None:
+    pool.close()
+    await pool.wait_closed()
