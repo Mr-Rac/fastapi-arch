@@ -1,19 +1,23 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Annotated
 
-from aiomysql import Pool, Cursor
 from fastapi import Request, HTTPException, status, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.exception import ERR
-
-
-async def get_mysql_pool(request: Request) -> Pool:
-    pool: Pool | None = getattr(request.app.state, "mysql_pool", None)
-    if not pool:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ERR.DEPENDENCY_MYSQL_INVALID)
-    return pool
+from app.domains.base_exception import Error
 
 
-async def get_mysql(pool: Pool = Depends(get_mysql_pool)) -> AsyncGenerator[Cursor, None]:
-    async with pool.acquire() as connection:
-        async with connection.cursor() as cursor:
-            yield cursor
+async def get_auth_mysql(request: Request) -> AsyncGenerator[AsyncSession, None]:
+    if session_maker := getattr(request.state, "auth_mysql_session_maker", None):
+        async with session_maker() as session:
+            try:
+                yield session
+            finally:
+                await session.close()
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_424_FAILED_DEPENDENCY,
+            detail=Error.INVALID_MYSQL,
+        )
+
+
+AuthMySQLDep = Annotated[AsyncSession, Depends(get_auth_mysql)]

@@ -1,11 +1,18 @@
-from fastapi import Request, HTTPException, status
+from typing import Annotated
+
+from fastapi import Request, HTTPException, status, Depends
 from redis.asyncio import Redis
 
-from app.exception import ERR
+from app.domains.base_exception import Error
 
 
-async def get_redis(request: Request) -> Redis:
-    redis: Redis | None = getattr(request.app.state, "redis", None)
-    if not redis:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ERR.DEPENDENCY_REDIS_INVALID)
-    return redis
+async def get_auth_redis(request: Request) -> Redis:
+    if auth_redis_pool := getattr(request.state, "auth_redis_pool", None):
+        return Redis.from_pool(auth_redis_pool)
+    raise HTTPException(
+        status_code=status.HTTP_424_FAILED_DEPENDENCY,
+        detail=Error.INVALID_REDIS,
+    )
+
+
+AuthRedisDep = Annotated[Redis, Depends(get_auth_redis)]
