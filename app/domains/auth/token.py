@@ -1,4 +1,4 @@
-from asyncio import gather
+import asyncio
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -6,8 +6,8 @@ from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 from pydantic import BaseModel, field_validator
 from redis.asyncio import Redis
 
-from app.domains.auth.const import TokenType
 from app.core.config import settings
+from app.domains.auth.const import TokenType
 from app.domains.auth.exception import AuthError
 from app.domains.auth.redis_key import AUTH_TOKEN_KEY
 
@@ -72,10 +72,9 @@ class Token:
 
     @classmethod
     async def clear(cls, subject: str, redis: Redis):
-        await gather(
-            redis.delete(AUTH_TOKEN_KEY.format(TokenType.ACCESS.value, subject)),
-            redis.delete(AUTH_TOKEN_KEY.format(TokenType.REFRESH.value, subject)),
-        )
+        async with asyncio.TaskGroup() as task_group:
+            task_group.create_task(redis.delete(AUTH_TOKEN_KEY.format(TokenType.ACCESS.value, subject)))
+            task_group.create_task(redis.delete(AUTH_TOKEN_KEY.format(TokenType.REFRESH.value, subject)))
 
     @staticmethod
     def extract(header_value: str | None) -> str | None:
