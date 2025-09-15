@@ -38,6 +38,10 @@ class Settings(BaseSettings):
 
     # OAuth
     SECRET_KEY: str = secrets.token_urlsafe(32)
+    ALGORITHM: str = "HS256"
+    ISSUER: str = "arc-fastapi"
+    AUDIENCE: str = "arc-fastapi"
+    LEEWAY: float = 30.0
     ACCESS_TOKEN_EXPIRE_SECONDS: int = 60 * 10
     REFRESH_TOKEN_EXPIRE_SECONDS: int = 60 * 60 * 24 * 7
 
@@ -98,8 +102,12 @@ class Settings(BaseSettings):
     def MYSQL_ECHO(self) -> bool:
         return self.DEBUG
 
-    ADMIN_USERNAME: str = "admin"
-    ADMIN_PASSWORD: str = "Sr939228893"
+    ADMIN_USER_USERNAME: str = "admin"
+    ADMIN_USER_PASSWORD: str = "admin"
+    ADMIN_ROLE_NAME: str = "admin"
+    ADMIN_PERMISSION_NAME: str = "admin"
+    ADMIN_PERMISSION_SCOPE: str = "admin"
+    ADMIN_PERMISSION_DESC: str = "admin"
 
 
 settings = Settings()  # type: ignore

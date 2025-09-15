@@ -1,10 +1,10 @@
-from typing import Any, List
+from typing import Any
 
 from sqlalchemy import Select, Update, Delete, Insert
 from sqlalchemy.dialects import mysql
 
 
-def parse_to_list(value: Any, separator: str = ",") -> List[str]:
+def parse_to_list(value: Any, separator: str = ",") -> list[str]:
     if isinstance(value, str):
         if separator in value:
             return [v.strip() for v in value.split(separator) if v.strip()]

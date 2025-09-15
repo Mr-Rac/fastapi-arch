@@ -18,9 +18,5 @@ uv sync
 ### Start Server
 
 ```shell
-uv run python main.py
-```
-or
-```shell
-fastapi dev main.py
+fastapi dev
 ```

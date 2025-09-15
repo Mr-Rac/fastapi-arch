@@ -6,15 +6,11 @@ class TokenType(str, Enum):
     REFRESH = "refresh"
 
 
-class TokenHeader:
-    ACCESS = "AUTHORIZATION"
-    REFRESH = "AUTHORIZATION-REFRESH"
-    NEW = "AUTHORIZATION-NEW"
+class RedisKey:
+    @staticmethod
+    def ALLOW(token_type: TokenType, jti: str) -> str:
+        return f"auth:allow:{token_type.value}:{jti}"
 
     @classmethod
-    def get(cls, token_type: TokenType, is_new: bool = False) -> str | None:
-        if token_type == TokenType.ACCESS:
-            return cls.ACCESS if not is_new else cls.NEW
-        elif token_type == TokenType.REFRESH:
-            return cls.REFRESH
-        return None
+    def TOKEN(cls, token_type: TokenType, subject: str) -> str:
+        return f"auth:token:{token_type.value}:{subject}"

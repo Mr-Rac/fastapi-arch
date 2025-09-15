@@ -1,9 +1,12 @@
+import logging
+
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, AsyncSession, async_sessionmaker
 from sqlmodel import SQLModel
 
 from app.core.config import settings
-from app.domains.user.curd import UserCurd
-from app.domains.user.schema import UserCreate
+from app.domains.auth.curd import UserCurd, RoleCurd, PermissionCurd, RolePermissionCurd, UserRoleCurd
+from app.domains.auth.schema import UserCreate, RoleCreate, PermissionCreate, GrantPermission, GrantRole, UserSelect, \
+    RoleSelect, PermissionSelect
 
 
 async def create_auth_mysql_engine() -> AsyncEngine:
@@ -32,11 +35,44 @@ async def create_auth_mysql_session_maker(engine: AsyncEngine) -> async_sessionm
 
 
 async def init_auth_mysql(session: AsyncSession) -> None:
-    try:
-        await UserCurd.get_by_username(session, settings.ADMIN_USERNAME)
-    except:
+    user = await UserCurd.select(session, UserSelect(username=settings.ADMIN_USER_USERNAME))
+    if not user:
         user_in = UserCreate(
-            username=settings.ADMIN_USERNAME,
-            password=settings.ADMIN_PASSWORD,
+            username=settings.ADMIN_USER_USERNAME,
+            password=settings.ADMIN_USER_PASSWORD,
         )
-        await UserCurd.create(session, user_in)
+        user = await UserCurd.create(session, user_in)
+
+    role = await RoleCurd.select(session, RoleSelect(name=settings.ADMIN_ROLE_NAME))
+    if not role:
+        role_in = RoleCreate(
+            name=settings.ADMIN_ROLE_NAME,
+        )
+        role = await RoleCurd.create(session, role_in)
+
+    permission = await PermissionCurd.select(session, PermissionSelect(name=settings.ADMIN_PERMISSION_NAME))
+    if not permission:
+        permission_in = PermissionCreate(
+            name=settings.ADMIN_PERMISSION_NAME,
+            scope=settings.ADMIN_PERMISSION_SCOPE,
+            desc=settings.ADMIN_PERMISSION_DESC,
+        )
+        permission = await PermissionCurd.create(session, permission_in)
+
+    try:
+        role_permission_in = GrantPermission(
+            rid=role.id,
+            pid=permission.id,
+        )
+        await RolePermissionCurd.create(session, role_permission_in)
+    except Exception as e:
+        logging.warning(e)
+
+    try:
+        user_role_in = GrantRole(
+            uid=user.id,
+            rid=role.id,
+        )
+        await UserRoleCurd.create(session, user_role_in)
+    except Exception as e:
+        logging.warning(e)
