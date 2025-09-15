@@ -98,5 +98,8 @@ class Settings(BaseSettings):
     def MYSQL_ECHO(self) -> bool:
         return self.DEBUG
 
+    ADMIN_USERNAME: str = "admin"
+    ADMIN_PASSWORD: str = "Sr939228893"
+
 
 settings = Settings()  # type: ignore

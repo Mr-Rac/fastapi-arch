@@ -5,10 +5,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domains.auth.schema import *
-from app.domains.base_service import BaseService
 from app.domains.auth.const import TokenType
+from app.domains.auth.schema import *
 from app.domains.auth.token import Token
+from app.domains.base_service import BaseService
 from app.domains.user.curd import UserCurd
 from app.models.auth import User
 

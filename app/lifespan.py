@@ -7,11 +7,10 @@ import certifi
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from fastapi import FastAPI
 from redis.asyncio import Redis, ConnectionPool
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from app.core.config import settings
-from app.core.database.mysql import create_auth_mysql_engine, create_auth_mysql_session_maker
+from app.core.database.mysql import create_auth_mysql_engine, create_auth_mysql_session_maker, init_auth_mysql
 from app.core.database.redis import create_auth_redis_pool
 
 
@@ -42,7 +41,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[LifespanState]:
     auth_mysql_engine = await create_auth_mysql_engine()
     auth_mysql_session_maker = await create_auth_mysql_session_maker(auth_mysql_engine)
     async with auth_mysql_session_maker() as session:
-        await session.execute(text("SELECT 1"))
+        await init_auth_mysql(session)
     logging.warning("Initialized mysql.")
 
     yield {

@@ -3,12 +3,13 @@ import logging
 from typing import Callable, Awaitable, TypeVar, Any
 
 from fastapi import status, HTTPException
+from sqlmodel import SQLModel
 
 from app.core.config import settings
 from app.domains.base_exception import Error
 from app.domains.base_schema import BaseData, BaseResponse
 
-D = TypeVar("D", bound=BaseData)
+D = TypeVar("D", bound=BaseData | SQLModel)
 R = TypeVar("R", bound=BaseResponse)
 
 

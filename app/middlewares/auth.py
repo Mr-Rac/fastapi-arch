@@ -5,11 +5,11 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.responses import JSONResponse, Response
 
 from app.api.dependencies.redis import get_redis
-from app.domains.auth.const import TokenType, TokenHeader
 from app.core.config import settings
+from app.domains.auth.const import TokenType, TokenHeader
+from app.domains.auth.exception import TokenException, AuthError
 from app.domains.auth.token import Token
 from app.domains.base_exception import CommonException
-from app.domains.auth.exception import TokenException, AuthError
 
 _WHITE_URL = {
     f"{settings.API_PREFIX}/openapi.json",

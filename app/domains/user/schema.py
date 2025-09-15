@@ -1,16 +1,24 @@
-from pydantic import Field
+from datetime import datetime
 
-from app.domains.base_schema import BaseData, BaseRequest, BaseResponse
-
-
-class UserData(BaseData):
-    username: str | None = Field(default=None, description="username")
+from pydantic import EmailStr
+from sqlmodel import SQLModel, Field
 
 
-class CreateRequest(BaseRequest):
-    username: str = Field(..., description="username")
-    password: str = Field(..., description="password")
+class UserCreate(SQLModel):
+    username: str = Field(unique=True, index=True, max_length=255)
+    password: str = Field(min_length=6, max_length=128)
+    email: EmailStr | None = Field(default=None, unique=True, index=True, max_length=255)
 
 
-class CreateResponse(BaseResponse):
-    data: UserData | None = Field(default=None, description="user data")
+class UserUpdate(SQLModel):
+    username: str = Field(unique=True, index=True, max_length=255)
+    password: str | None = Field(default=None, min_length=6, max_length=128)
+    email: EmailStr | None = Field(default=None, unique=True, index=True, max_length=255)
+
+
+class UserPublic(SQLModel):
+    id: int
+    username: str
+    email: EmailStr
+    created_at: datetime
+    updated_at: datetime

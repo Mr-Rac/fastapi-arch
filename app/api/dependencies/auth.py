@@ -7,10 +7,10 @@ from pydantic import ValidationError
 from redis.asyncio import Redis
 from sqlalchemy import select
 
-from app.domains.auth.const import TokenType
 from app.core.config import settings
-from app.domains.auth.token import Token
+from app.domains.auth.const import TokenType
 from app.domains.auth.exception import AuthError
+from app.domains.auth.token import Token
 
 OAuth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_PREFIX}/auth/login/access-token",
