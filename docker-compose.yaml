@@ -1,5 +1,5 @@
 services:
-  fastapi-arch:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
