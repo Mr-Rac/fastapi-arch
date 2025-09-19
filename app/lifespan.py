@@ -44,12 +44,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[LifespanState]:
         await init_auth_mysql(session)
     logging.warning("Initialized mysql.")
 
-    yield {
-        "aiohttp_session": aiohttp_session,
-        "auth_redis_pool": auth_redis_pool,
-        "auth_mysql_engine": auth_mysql_engine,
-        "auth_mysql_session_maker": auth_mysql_session_maker,
-    }
+    yield LifespanState(
+        aiohttp_session=aiohttp_session,
+        auth_redis_pool=auth_redis_pool,
+        auth_mysql_engine=auth_mysql_engine,
+        auth_mysql_session_maker=auth_mysql_session_maker,
+    )
 
     await auth_mysql_engine.dispose()
     await auth_redis_pool.aclose()
