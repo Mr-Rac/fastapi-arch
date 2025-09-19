@@ -1,6 +1,5 @@
 services:
   fastapi-arch:
-    profiles: [ "dev" ]
     build:
       context: .
       dockerfile: Dockerfile
