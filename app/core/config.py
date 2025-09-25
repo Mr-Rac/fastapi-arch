@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     # Base
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
-    PROJECT_NAME: str = "Arc FastAPI"
+    PROJECT_NAME: str = "Arch FastAPI"
     VERSION: str = "0.0.1"
     CORS_ORIGINS: Annotated[list[AnyUrl] | str, BeforeValidator(parse_to_list)] = []
     API_PREFIX: str = "/api"
